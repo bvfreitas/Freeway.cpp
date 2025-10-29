@@ -5,22 +5,22 @@
 
 #define MAX_VELOCIDADE 3
 #define MAX_CARROS_PISTA 4
-#define LARGURA_JOGO 20
+#define LARGURA_JOGO 20 //Também deve ser aleatório, mas vai ficar na classe do Jogo
 
 class Pista{
     public:
         int velocidade = 0;
         int numCarros = 0;
-        std::vector<int> posicoesCarros;
+        std::vector<int> posicoesCarros; //Alocação dinâmica para o vetor
 
-    Pista() = default; //Cria a pista vazia
+        Pista() = default; //Cria a pista vazia
 
     void inicializa(int larguraJogo){
-        velocidade = (rand() % MAX_VELOCIDADE + 1) * (rand() % 2 == 0? 1 : -1);
+        velocidade = (rand() % MAX_VELOCIDADE + 1) * (rand() % 2 == 0? 1 : -1); 
         numCarros = rand() % MAX_CARROS_PISTA + 1;
         posicoesCarros.clear(); //Tira todos os dados do vetor
         for(int i = 0; i < numCarros; i++){
-            posicoesCarros.push_back(rand() % larguraJogo + 1);
+            posicoesCarros.push_back(rand() % larguraJogo + 1); //Adidiona um item aleatório ao vetor
         }
     }
 
