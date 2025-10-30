@@ -80,4 +80,20 @@ namespace LibJogo {
 
     }
 
+    void Jogo::atualizaPosicaoCarros() {
+        for (int i = 0; i < numPistas; ++i) {
+            int velocidade = pistas[i].velocidade;
+
+            for (int& pos : pistas[i].posicoesCarros) {
+                pos += velocidade;
+
+                // Loop circular: se passar da largura, volta pro início
+                if (pos > largura)
+                    pos -= largura;
+                else if (pos < 1)
+                    pos += largura;
+        }
+    }
+}
+
 }
