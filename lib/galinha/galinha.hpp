@@ -10,7 +10,7 @@ namespace LibGalinha{
 
         Galinha();
 
-        void inicializa(int larguraJogo);
+        void inicializa(int larguraJogo, int numPistas);
         void imprime();
     };
 }

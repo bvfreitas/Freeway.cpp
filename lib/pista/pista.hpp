@@ -1,5 +1,6 @@
 // pista.hpp
 #pragma once
+#include <vector>
 
 namespace LibPista{
 class Pista{

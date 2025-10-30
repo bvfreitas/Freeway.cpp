@@ -9,6 +9,7 @@ namespace LibJogo{
         public:
             int largura;
             std::vector<LibPista::Pista> pistas;
+            int numPistas;
             LibGalinha::Galinha galinha;
             int pontos;
 

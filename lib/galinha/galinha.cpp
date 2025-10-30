@@ -8,9 +8,9 @@
 namespace LibGalinha{
     Galinha::Galinha() = default;
 
-    void Galinha::inicializa(int larguraJogo){
-        y = 0; //Vai começar sempre no começo da avenida
-        x = (rand() % larguraJogo + 1); //Posicao inicial aleatória
+    void Galinha::inicializa(int larguraJogo, int numPistas){
+        y = numPistas - 1; //Vai começar sempre no começo da avenida
+        x = (rand() % larguraJogo); //Posicao inicial aleatória
         vidas = MAX_VIDAS;
     }
 
