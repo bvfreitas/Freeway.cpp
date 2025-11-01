@@ -1,99 +1,80 @@
-//jogo.cpp
+// jogo/jogo.cpp
 #include "jogo.hpp"
-#include "../constates.hpp"
-#include <cstdlib>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 namespace LibJogo {
 
-    void Jogo::inicializa(){
-        largura = rand() % (MAX_LARGURA_JOGO - MIN_LARGURA_JOGO + 1) + MIN_LARGURA_JOGO;
-        
-        numPistas = rand() % (MAX_PISTAS - MIN_PISTAS + 1) + MIN_PISTAS;
-        pistas.clear();
+void Jogo::inicializa() {
+    std::srand(std::time(nullptr));
 
-        for (int i = 0; i < numPistas; i++) {
-            LibPista::Pista pistaAux;
+    largura = rand() % 11 + 10;        // 10 a 20
+    num_pistas = rand() % 6 + 5;       // 5 a 10
+    pontos = 0;
 
-            if (i == 0 || i == numPistas - 1){
-                pistaAux.velocidade = 0;
-                pistaAux.numCarros = 0;
-                pistaAux.posicoesCarros.clear();
-            } else {
-                pistaAux.inicializa(largura);
+    pistas.clear();
+    pistas.resize(num_pistas);
+
+    for (int i = 0; i < num_pistas; ++i) {
+        if (i == 0 || i == num_pistas - 1) {
+            pistas[i].set_velocidade(0);
+            pistas[i].get_posicoes_carros().clear();
+        } else {
+            pistas[i].set_velocidade((rand() % 2 == 0) ? 1 : -1);
+            int num_carros = rand() % 3 + 1;
+            pistas[i].get_posicoes_carros().clear();
+            for (int c = 0; c < num_carros; ++c) {
+                int pos = rand() % largura + 1;
+                pistas[i].get_posicoes_carros().push_back(pos);
             }
-
-        pistas.push_back(pistaAux);
+        }
     }
 
-        galinha.inicializa(largura, numPistas);
-        pontos = 0;
+    galinha.set_x(largura / 2 + 1);
+    galinha.set_y(num_pistas - 1);
+}
+
+void Jogo::desenha_mapa() {
+    std::vector<std::vector<char>> mapa(num_pistas, std::vector<char>(largura, ' '));
+
+    // Colocar carros
+    for (int i = 0; i < num_pistas; ++i) {
+        for (int pos : pistas[i].get_posicoes_carros()) {
+            if (pos >= 1 && pos <= largura) {
+                mapa[i][pos - 1] = 'C';
+            }
+        }
     }
 
-    void Jogo::desenhaMapa(){
-        char mapa[numPistas][largura];
-        std::cout << "Pontos: " << pontos << "\n";
+    // Colocar galinha
+    if (galinha.get_y() >= 0 && galinha.get_y() < num_pistas && galinha.get_x() >= 1 && galinha.get_x() <= largura) {
+        mapa[galinha.get_y()][galinha.get_x() - 1] = 'G';
+    }
 
-        for(int i = 0; i < numPistas; i++){
-            for(int j = 0; j < largura; j++){
-                mapa[i][j] = ' ';
-            }
-        }
-
-        for(int i = 0; i < numPistas; i++){
-            for(int pos:pistas[i].posicoesCarros){
-                if(pos >= 1 && pos <= largura){
-                    mapa[i][pos - 1] = 'C';
-                }
-            }
-        }
-
-        if (galinha.y >= 0 && galinha.y < numPistas &&
-            galinha.x >= 1 && galinha.x <= largura) {
-            mapa[galinha.y][galinha.x] = 'G';
-        }
-
+    std::cout << "Pontos: " << pontos << "\n";
+    std::cout << std::string(largura + 2, '-') << "\n";
+    for (int i = 0; i < num_pistas; ++i) {
         std::cout << "|";
-        for (int j = 0; j < largura; ++j)
-            std::cout << "--";
-
-        std::cout << "|\n";
-
-        for (int i = 0; i < numPistas; ++i) {
-            std::cout << "|";
-            for (int j = 0; j < largura; ++j) {
-                if (mapa[i][j] == 'C')
-                    std::cout << "🚗";
-                else if (mapa[i][j] == 'G')
-                    std::cout << "🐔";
-                else
-                    std::cout << "  ";
-            }
-            std::cout << "|\n";
+        for (int j = 0; j < largura; ++j) {
+            char c = mapa[i][j];
+            if (c == 'C') std::cout << "C";
+            else if (c == 'G') std::cout << "G";
+            else std::cout << " ";
         }
-
-        std::cout << "|";
-        for (int j = 0; j < largura; ++j)
-            std::cout << "--";
-        
         std::cout << "|\n";
-
     }
+    std::cout << std::string(largura + 2, '-') << "\n";
+}
 
-    void Jogo::atualizaPosicaoCarros() {
-        for (int i = 0; i < numPistas; ++i) {
-            int velocidade = pistas[i].velocidade;
-
-            for (int& pos : pistas[i].posicoesCarros) {
-                pos += velocidade;
-
-                // Loop circular: se passar da largura, volta pro início
-                if (pos > largura)
-                    pos -= largura;
-                else if (pos < 1)
-                    pos += largura;
+void Jogo::atualiza_carros() {
+    for (auto& pista : pistas) {
+        for (int& pos : pista.get_posicoes_carros()) {
+            pos += pista.get_velocidade();
+            if (pos > largura) pos = 1;
+            if (pos < 1) pos = largura;
         }
     }
 }
 
-}
+} // namespace LibJogo
